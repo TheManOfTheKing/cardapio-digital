@@ -107,7 +107,7 @@ const Register = () => {
               <Input
                 id="code"
                 type="text"
-                placeholder="Digite o código de acesso"
+                placeholder="DIGITE O CÓDIGO DE REGISTRO"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 required
