@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 export const QRCodeGenerator = () => {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const menuUrl = window.location.origin; // URL do menu público
+  const menuUrl = window.location.origin + '/language-selection'; // URL do menu público (tela de seleção de idiomas)
 
   useEffect(() => {
     generateQRCode();
