@@ -104,16 +104,37 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
         </div>
       </header>
 
-      <div className="flex">
-        {/* Desktop Sidebar */}
-        <aside className="hidden lg:block w-64 border-r min-h-[calc(100vh-4rem)] p-4">
-          <Sidebar />
-        </aside>
+      <div className="flex flex-col min-h-[calc(100vh-4rem)]">
+        <div className="flex flex-1">
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:block w-64 border-r p-4">
+            <Sidebar />
+          </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 p-6 lg:p-8">
-          {children}
-        </main>
+          {/* Main Content */}
+          <main className="flex-1 p-6 lg:p-8">
+            {children}
+          </main>
+        </div>
+        
+        {/* Footer */}
+        <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-4 px-6">
+          <div className="text-center text-sm text-muted-foreground">
+            <p className="flex items-center justify-center gap-1">
+              <span>© 2025</span>
+              <a 
+                href="https://wa.me/5512982176890?text=Quero%20meu%20card%C3%A1pio%20digital..." 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-medium"
+              >
+                AndréSD
+              </a>
+              <span>•</span>
+              <span>Desenvolvido com carinho e dedicação</span>
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   );
