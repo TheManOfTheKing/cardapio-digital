@@ -113,7 +113,7 @@ const AdminLogin = () => {
                 className="w-full h-11 group hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 hover:scale-[1.02]" 
                 asChild
               >
-                <Link to="/menu">
+                <Link to="/language-selection">
                   <QrCode className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" strokeWidth={2.5} />
                   Ver Menu Digital
                 </Link>
