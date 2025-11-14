@@ -65,25 +65,58 @@ const Translations = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase
-      .from('restaurant_settings')
-      .update({
-        translation_api_key: formData.translation_api_key || null,
-        translation_service: formData.translation_service,
+    try {
+      // Validações
+      if (!settings?.id) {
+        toast.error('Configurações não encontradas. Por favor, recarregue a página.');
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.active_languages || formData.active_languages.length === 0) {
+        toast.error('Selecione pelo menos um idioma ativo');
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.active_languages.includes(formData.default_language)) {
+        toast.error('O idioma padrão deve estar entre os idiomas ativos');
+        setLoading(false);
+        return;
+      }
+
+      // Preparar dados para atualização
+      // Só inclui translation_api_key se foi preenchido
+      const updateData: any = {
         active_languages: formData.active_languages,
         default_language: formData.default_language,
-      } as any)
-      .eq('id', settings?.id);
+      };
 
-    if (error) {
-      toast.error('Erro ao salvar configurações');
-      console.error(error);
-    } else {
-      toast.success('Configurações salvas com sucesso!');
-      refetchSettings();
+      // Só adiciona translation_api_key e translation_service se a API key foi preenchida
+      if (formData.translation_api_key && formData.translation_api_key.trim().length > 0) {
+        updateData.translation_api_key = formData.translation_api_key.trim();
+        updateData.translation_service = formData.translation_service;
+      }
+      // Se estiver vazio, não inclui no update (mantém o valor atual no banco)
+
+      const { error } = await supabase
+        .from('restaurant_settings')
+        .update(updateData)
+        .eq('id', settings.id);
+
+      if (error) {
+        console.error('Erro ao salvar:', error);
+        toast.error(`Erro ao salvar configurações: ${error.message || 'Erro desconhecido'}`);
+      } else {
+        toast.success('Configurações salvas com sucesso!');
+        refetchSettings();
+      }
+    } catch (error: any) {
+      console.error('Erro inesperado:', error);
+      toast.error(`Erro ao salvar: ${error.message || 'Erro desconhecido'}`);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleLanguageToggle = (languageCode: string, enabled: boolean) => {
@@ -280,6 +313,7 @@ const Translations = () => {
                     onValueChange={(value) =>
                       setFormData((prev) => ({ ...prev, translation_service: value }))
                     }
+                    disabled={!formData.translation_api_key || formData.translation_api_key.trim().length === 0}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -289,10 +323,15 @@ const Translations = () => {
                       <SelectItem value="deepl">DeepL</SelectItem>
                     </SelectContent>
                   </Select>
+                  {(!formData.translation_api_key || formData.translation_api_key.trim().length === 0) && (
+                    <p className="text-xs text-muted-foreground">
+                      Preencha a API Key para habilitar o serviço de tradução
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="translation_api_key">API Key</Label>
+                  <Label htmlFor="translation_api_key">API Key (Opcional)</Label>
                   <Input
                     id="translation_api_key"
                     type="password"
@@ -300,18 +339,33 @@ const Translations = () => {
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, translation_api_key: e.target.value }))
                     }
-                    placeholder="Insira sua chave de API"
+                    placeholder="Insira sua chave de API (opcional)"
                   />
                   <p className="text-xs text-muted-foreground">
-                    {formData.translation_service === 'google'
-                      ? 'Obtenha sua chave em: https://cloud.google.com/translate'
-                      : 'Obtenha sua chave em: https://www.deepl.com/pro-api'}
+                    {formData.translation_api_key && formData.translation_api_key.trim().length > 0 ? (
+                      formData.translation_service === 'google' ? (
+                        <>Obtenha sua chave em: <a href="https://cloud.google.com/translate" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://cloud.google.com/translate</a></>
+                      ) : (
+                        <>Obtenha sua chave em: <a href="https://www.deepl.com/pro-api" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://www.deepl.com/pro-api</a></>
+                      )
+                    ) : (
+                      'A API Key é opcional. Você pode salvar os idiomas ativos sem configurar a tradução automática.'
+                    )}
                   </p>
                 </div>
 
-                <Button type="submit" disabled={loading}>
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                  Salvar Configurações
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Salvando...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Salvar Configurações da API
+                    </>
+                  )}
                 </Button>
               </form>
             </CardContent>
@@ -328,27 +382,44 @@ const Translations = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {AVAILABLE_LANGUAGES.map((language) => (
-                  <div key={language.code} className="flex items-center justify-between">
-                    <Label htmlFor={`lang-${language.code}`} className="flex items-center gap-2">
-                      <span className="text-2xl">{language.flag}</span>
-                      <span>{language.name}</span>
-                      {language.code === formData.default_language && (
-                        <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded">
-                          Padrão
-                        </span>
-                      )}
-                    </Label>
-                    <Switch
-                      id={`lang-${language.code}`}
-                      checked={formData.active_languages.includes(language.code)}
-                      onCheckedChange={(checked) => handleLanguageToggle(language.code, checked)}
-                      disabled={language.code === formData.default_language}
-                    />
-                  </div>
-                ))}
-              </div>
+              <form onSubmit={handleSaveSettings} className="space-y-4">
+                <div className="space-y-4">
+                  {AVAILABLE_LANGUAGES.map((language) => (
+                    <div key={language.code} className="flex items-center justify-between">
+                      <Label htmlFor={`lang-${language.code}`} className="flex items-center gap-2 cursor-pointer">
+                        <span className="text-2xl">{language.flag}</span>
+                        <span>{language.name}</span>
+                        {language.code === formData.default_language && (
+                          <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded">
+                            Padrão
+                          </span>
+                        )}
+                      </Label>
+                      <Switch
+                        id={`lang-${language.code}`}
+                        checked={formData.active_languages.includes(language.code)}
+                        onCheckedChange={(checked) => handleLanguageToggle(language.code, checked)}
+                        disabled={language.code === formData.default_language}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="pt-4 border-t">
+                  <Button type="submit" disabled={loading} className="w-full">
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Salvando...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Salvar Idiomas Ativos
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
             </CardContent>
           </Card>
         </div>
