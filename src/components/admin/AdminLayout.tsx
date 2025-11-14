@@ -92,7 +92,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => window.open('/', '_blank')}
+              onClick={() => window.open('/language-selection', '_blank')}
             >
               Ver Menu
             </Button>

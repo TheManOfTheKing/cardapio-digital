@@ -6,11 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Eye, Package, Layers, TrendingUp } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 import { QRCodeGenerator } from '@/components/admin/QRCodeGenerator';
-import { SeedDataButton } from '@/components/admin/SeedDataButton';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
+  const [userName, setUserName] = useState<string>('Administrador');
   const [stats, setStats] = useState({
     totalItems: 0,
     totalCategories: 0,
@@ -60,9 +60,35 @@ const Dashboard = () => {
     }
   }, [session]);
 
-  if (!session) {
-    return null;
-  }
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (!session?.user) {
+        setUserName('Administrador');
+        return;
+      }
+      
+      // Tentar obter do user_metadata primeiro
+      let metadataName = session.user.user_metadata?.name;
+      
+      // Se não tiver nos metadados da sessão, buscar do usuário atualizado
+      if (!metadataName || metadataName.trim().length === 0) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          metadataName = user.user_metadata?.name;
+        }
+      }
+      
+      if (metadataName && metadataName.trim().length > 0) {
+        setUserName(metadataName.trim());
+      } else {
+        setUserName('Administrador');
+      }
+    };
+
+    if (session) {
+      fetchUserName();
+    }
+  }, [session]);
 
   const statCards = [
     {
@@ -98,35 +124,10 @@ const Dashboard = () => {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Visão geral do seu menu digital
-          </p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {statCards.map((stat) => (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {stat.title}
-                </CardTitle>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">
-                  {stat.description}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
+        {/* Card de Boas-vindas no topo */}
         <Card>
           <CardHeader>
-            <CardTitle>Bem-vindo ao Painel Administrativo</CardTitle>
+            <CardTitle>Bem-vindo, {userName}!</CardTitle>
             <CardDescription>
               Gerencie seu menu digital, traduções e configurações
             </CardDescription>
@@ -169,11 +170,31 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Grid com QR Code e Seed Data */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <QRCodeGenerator />
-          <SeedDataButton />
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Visão Geral</h2>
         </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {statCards.map((stat) => (
+            <Card key={stat.title}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  {stat.title}
+                </CardTitle>
+                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">
+                  {stat.description}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* QR Code Generator */}
+        <QRCodeGenerator />
       </div>
     </AdminLayout>
   );

@@ -12,7 +12,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
     viteEnvKeys: Object.keys(import.meta.env || {}).filter((k) => k.startsWith('VITE_')),
   });
   throw new Error(
-    'Missing Supabase environment variables: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY. Please set them and rebuild the app.'
+    'Missing Supabase environment variables: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY. Please set them in a .env file and restart the dev server.'
   );
 }
 

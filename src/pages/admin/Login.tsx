@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Lock } from 'lucide-react';
+import { Lock, QrCode, UserPlus } from 'lucide-react';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -79,6 +79,27 @@ const AdminLogin = () => {
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
+          <div className="mt-6 pt-6 border-t space-y-4">
+            <div>
+              <p className="text-center text-sm text-muted-foreground mb-4">
+                Acesso público ao menu:
+              </p>
+              <Button variant="outline" className="w-full" asChild>
+                <Link to="/menu">
+                  <QrCode className="h-4 w-4 mr-2" />
+                  Ver Menu Digital
+                </Link>
+              </Button>
+            </div>
+            <div className="pt-4 border-t">
+              <Button variant="ghost" className="w-full" asChild>
+                <Link to="/admin/register">
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Criar nova conta
+                </Link>
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
