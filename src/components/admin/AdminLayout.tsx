@@ -12,6 +12,7 @@ import {
   QrCode,
   LogOut,
   Menu,
+  ExternalLink,
 } from 'lucide-react';
 import {
   Sheet,
@@ -49,17 +50,17 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   };
 
   const Sidebar = () => (
-    <nav className="space-y-1">
+    <nav className="space-y-1.5">
       {navigation.map((item) => (
         <NavLink
           key={item.name}
           to={item.href}
-          className="flex items-center gap-3 px-3 py-2 text-sm rounded-lg hover:bg-accent transition-colors"
-          activeClassName="bg-accent text-accent-foreground font-medium"
+          className="flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg hover:bg-accent transition-all duration-200 group"
+          activeClassName="bg-primary/10 text-primary font-semibold border-l-2 border-primary"
           onClick={() => setMobileMenuOpen(false)}
         >
-          <item.icon className="h-5 w-5" />
-          {item.name}
+          <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform" strokeWidth={2} />
+          <span>{item.name}</span>
         </NavLink>
       ))}
     </nav>
@@ -84,20 +85,32 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             </SheetContent>
           </Sheet>
 
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold">Menu Digital Admin</h1>
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+              <LayoutDashboard className="h-4 w-4 text-primary" strokeWidth={2.5} />
+            </div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              Menu Digital Admin
+            </h1>
           </div>
 
-          <div className="ml-auto flex items-center gap-4">
+          <div className="ml-auto flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => window.open('/language-selection', '_blank')}
+              className="group hover:bg-primary/5 transition-all duration-200"
             >
+              <ExternalLink className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" strokeWidth={2.5} />
               Ver Menu
             </Button>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
-              <LogOut className="h-4 w-4 mr-2" />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout}
+              className="group hover:bg-destructive/5 hover:text-destructive transition-all duration-200"
+            >
+              <LogOut className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" strokeWidth={2.5} />
               Sair
             </Button>
           </div>

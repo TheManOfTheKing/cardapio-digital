@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, Package, Layers, TrendingUp } from 'lucide-react';
+import { Eye, Package, Layers, TrendingUp, Sparkles } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 import { QRCodeGenerator } from '@/components/admin/QRCodeGenerator';
 
@@ -97,6 +97,8 @@ const Dashboard = () => {
       icon: Package,
       description: `${stats.activeItems} disponíveis`,
       color: 'text-blue-600',
+      bgGradient: 'from-blue-500/10 to-blue-500/5',
+      borderColor: 'border-blue-500/20',
     },
     {
       title: 'Categorias',
@@ -104,6 +106,8 @@ const Dashboard = () => {
       icon: Layers,
       description: 'Categorias ativas',
       color: 'text-green-600',
+      bgGradient: 'from-green-500/10 to-green-500/5',
+      borderColor: 'border-green-500/20',
     },
     {
       title: 'Visualizações',
@@ -111,6 +115,8 @@ const Dashboard = () => {
       icon: Eye,
       description: 'Total de visualizações',
       color: 'text-purple-600',
+      bgGradient: 'from-purple-500/10 to-purple-500/5',
+      borderColor: 'border-purple-500/20',
     },
     {
       title: 'Taxa de Disponibilidade',
@@ -118,6 +124,8 @@ const Dashboard = () => {
       icon: TrendingUp,
       description: 'Itens disponíveis',
       color: 'text-orange-600',
+      bgGradient: 'from-orange-500/10 to-orange-500/5',
+      borderColor: 'border-orange-500/20',
     },
   ];
 
@@ -125,10 +133,13 @@ const Dashboard = () => {
     <AdminLayout>
       <div className="space-y-6">
         {/* Card de Boas-vindas no topo */}
-        <Card>
+        <Card className="border-2 border-primary/10 bg-gradient-to-br from-primary/5 via-background to-secondary/5 shadow-lg">
           <CardHeader>
-            <CardTitle>Bem-vindo, {userName}!</CardTitle>
-            <CardDescription>
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <Sparkles className="h-5 w-5 text-primary" strokeWidth={2.5} />
+              Bem-vindo, {userName}!
+            </CardTitle>
+            <CardDescription className="text-base">
               Gerencie seu menu digital, traduções e configurações
             </CardDescription>
           </CardHeader>
@@ -176,16 +187,21 @@ const Dashboard = () => {
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {statCards.map((stat) => (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+            <Card 
+              key={stat.title}
+              className={`border ${stat.borderColor} bg-gradient-to-br ${stat.bgGradient} hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group`}
+            >
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-semibold">
                   {stat.title}
                 </CardTitle>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                <div className={`p-2 rounded-lg bg-background/50 group-hover:scale-110 transition-transform`}>
+                  <stat.icon className={`h-5 w-5 ${stat.color}`} strokeWidth={2.5} />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">
+                <div className="text-3xl font-bold mb-1">{stat.value}</div>
+                <p className="text-xs text-muted-foreground font-medium">
                   {stat.description}
                 </p>
               </CardContent>
