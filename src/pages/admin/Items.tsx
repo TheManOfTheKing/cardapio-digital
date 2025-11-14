@@ -191,7 +191,7 @@ const Items = () => {
       category_id: formData.category_id,
       name: formData.name,
       description: formData.description || null,
-      price: Math.round(parseFloat(formData.price) * 100), // Converter para centavos
+      price: Math.round(parseFloat(formData.price) * 100), // Converter para centavos de Euro
       image_url: formData.image_url || null,
       dietary_attributes: formData.dietary_attributes.length > 0 ? formData.dietary_attributes : null,
       allergens: formData.allergens ? formData.allergens.split(',').map(a => a.trim()).filter(Boolean) : null,
@@ -239,7 +239,7 @@ const Items = () => {
       category_id: item.category_id,
       name: item.name,
       description: item.description || '',
-      price: (item.price / 100).toFixed(2), // Converter de centavos para reais
+      price: (item.price / 100).toFixed(2), // Converter de centavos para Euro
       image_url: item.image_url || '',
       dietary_attributes: (item.dietary_attributes as DietaryAttribute[]) || [],
       allergens: item.allergens?.join(', ') || '',
@@ -388,7 +388,7 @@ const Items = () => {
 
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="space-y-2">
-                    <Label htmlFor="price">Preço (R$) *</Label>
+                    <Label htmlFor="price">Preço (€) *</Label>
                     <Input
                       id="price"
                       type="number"
@@ -400,7 +400,7 @@ const Items = () => {
                       required
                     />
                     <p className="text-xs text-muted-foreground">
-                      O preço será armazenado em centavos automaticamente
+                      O preço será armazenado em centavos de Euro automaticamente
                     </p>
                   </div>
                   <div className="space-y-2">
@@ -604,9 +604,9 @@ const Items = () => {
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{getCategoryName(item.category_id)}</TableCell>
                     <TableCell>
-                      {(item.price / 100).toLocaleString('pt-BR', {
+                      {(item.price / 100).toLocaleString('pt-PT', {
                         style: 'currency',
-                        currency: 'BRL',
+                        currency: 'EUR',
                       })}
                     </TableCell>
                     <TableCell>

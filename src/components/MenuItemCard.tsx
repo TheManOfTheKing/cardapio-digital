@@ -47,7 +47,7 @@ export const MenuItemCard = ({ item, onClick, showPrice = true }: MenuItemCardPr
           <h3 className="font-semibold text-lg leading-tight">{item.name}</h3>
           {showPrice && (
             <span className="text-primary font-bold text-lg whitespace-nowrap">
-              €{item.price.toFixed(2)}
+              €{(item.price / 100).toFixed(2)}
             </span>
           )}
         </div>
