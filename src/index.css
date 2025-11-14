@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 24 100% 5%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 24 100% 5%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 100% 5%;
+
+    /* Terracota - Cor primária do restaurante */
+    --primary: 12 78% 47%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Verde Oliva - Cor secundária */
+    --secondary: 75 46% 35%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 30 40% 96%;
+    --muted-foreground: 24 10% 45%;
+
+    /* Dourado - Cor de destaque */
+    --accent: 45 100% 50%;
+    --accent-foreground: 24 100% 5%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 20% 90%;
+    --input: 30 20% 90%;
+    --ring: 12 78% 47%;
+
+    --radius: 0.75rem;
+
+    /* Gradientes elegantes */
+    --gradient-primary: linear-gradient(135deg, hsl(12 78% 47%) 0%, hsl(12 78% 37%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(30 40% 98%) 0%, hsl(0 0% 100%) 100%);
+    
+    /* Sombras sofisticadas */
+    --shadow-elegant: 0 10px 30px -10px hsl(12 78% 47% / 0.2);
+    --shadow-card: 0 2px 8px -2px hsl(24 100% 5% / 0.1);
+    
+    /* Transições suaves */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 12 78% 47%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 12 78% 47%;
+  }
+
+  .dark {
+    --background: 24 100% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 24 50% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 24 50% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 12 78% 57%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 75 46% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 24 30% 15%;
+    --muted-foreground: 30 20% 65%;
+
+    --accent: 45 100% 60%;
+    --accent-foreground: 24 100% 5%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 24 30% 18%;
+    --input: 24 30% 18%;
+    --ring: 12 78% 57%;
+    
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 12 78% 57%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 12 78% 57%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+  
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+}
