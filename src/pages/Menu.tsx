@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Phone, Instagram, Facebook, Globe as GlobeIcon } from 'lucide-react';
 import { useRestaurantSettings } from '@/hooks/useRestaurantSettings';
@@ -9,6 +9,7 @@ import { MenuCategory } from '@/components/MenuCategory';
 import { MenuItemDialog } from '@/components/MenuItemDialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import type { Database } from '@/types/database';
 
 type MenuItem = Database['public']['Tables']['menu_items']['Row'];
@@ -23,6 +24,9 @@ const Menu = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const categoryRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const observerRef = useRef<IntersectionObserver | null>(null);
   
   const { data: settings, isLoading: settingsLoading } = useRestaurantSettings();
   const { data: menuData, isLoading: menuLoading } = useMenuItems(language);
@@ -52,6 +56,108 @@ const Menu = () => {
       item.description?.toLowerCase().includes(searchTerm.toLowerCase())
     ),
   }));
+
+  // Get categories with items for navigation
+  const categoriesWithItems = useMemo(() => {
+    return filteredMenuData?.filter(cat => cat.items.length > 0) || [];
+  }, [filteredMenuData]);
+
+  // Setup Intersection Observer for scroll spy
+  useEffect(() => {
+    if (!categoriesWithItems.length) return;
+
+    // Cleanup previous observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    // Set initial active category (first one)
+    if (categoriesWithItems.length > 0) {
+      setActiveCategory(categoriesWithItems[0].slug);
+    }
+
+    // Create new observer
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        // Find the entry with the highest intersection ratio that's visible
+        const visibleEntries = entries.filter(entry => entry.isIntersecting);
+        if (visibleEntries.length > 0) {
+          // Sort by intersection ratio (highest first) and then by position (topmost first)
+          visibleEntries.sort((a, b) => {
+            if (b.intersectionRatio !== a.intersectionRatio) {
+              return b.intersectionRatio - a.intersectionRatio;
+            }
+            return a.boundingClientRect.top - b.boundingClientRect.top;
+          });
+          const topEntry = visibleEntries[0];
+          if (topEntry.isIntersecting && topEntry.intersectionRatio > 0.1) {
+            setActiveCategory(topEntry.target.id);
+          }
+        } else {
+          // If no entries are visible, check scroll position
+          // If at the top, set first category as active
+          if (window.scrollY < 200) {
+            setActiveCategory(categoriesWithItems[0]?.slug || null);
+          }
+        }
+      },
+      {
+        rootMargin: '-20% 0px -60% 0px', // Trigger when section is in the upper 40% of viewport
+        threshold: [0, 0.1, 0.5, 1],
+      }
+    );
+
+    // Observe all category sections
+    categoriesWithItems.forEach(category => {
+      const element = document.getElementById(category.slug);
+      if (element) {
+        categoryRefs.current.set(category.slug, element);
+        observerRef.current?.observe(element);
+      }
+    });
+
+    // Handle scroll to detect when at top
+    const handleScroll = () => {
+      if (window.scrollY < 200) {
+        const firstCategory = categoriesWithItems[0];
+        if (firstCategory) {
+          const element = document.getElementById(firstCategory.slug);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top > 200) {
+              setActiveCategory(firstCategory.slug);
+            }
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [categoriesWithItems]);
+
+  // Handle category navigation click
+  const handleCategoryClick = (slug: string) => {
+    const element = document.getElementById(slug);
+    if (element) {
+      // Calculate header height dynamically (header + category nav)
+      const header = document.querySelector('header');
+      const headerHeight = header ? header.offsetHeight : 150;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
+  };
   
   if (settingsLoading || menuLoading || !settings || !menuData) {
     return (
@@ -92,6 +198,32 @@ const Menu = () => {
             />
           </div>
         </div>
+        
+        {/* Category Navigation */}
+        {categoriesWithItems.length > 0 && (
+          <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container mx-auto px-4">
+              <nav className="flex items-center gap-2 overflow-x-auto py-3 scrollbar-hide">
+                {categoriesWithItems.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => handleCategoryClick(category.slug)}
+                    className={cn(
+                      "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200",
+                      "hover:bg-primary/10 hover:text-primary",
+                      activeCategory === category.slug
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {category.icon && <span className="mr-2">{category.icon}</span>}
+                    {category.name}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </div>
+        )}
       </header>
       
       {/* Cover Image */}

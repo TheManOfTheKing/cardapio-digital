@@ -14,7 +14,7 @@ export const MenuCategory = ({ category, onItemClick, showPrice }: MenuCategoryP
   if (category.items.length === 0) return null;
 
   return (
-    <section id={category.slug} className="scroll-mt-20">
+    <section id={category.slug} className="scroll-mt-32">
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
           {category.icon && <span className="text-3xl">{category.icon}</span>}
