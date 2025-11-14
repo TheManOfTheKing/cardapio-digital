@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { 
   Palette, 
@@ -19,7 +20,10 @@ import {
   Globe, 
   Save,
   Eye,
-  X
+  X,
+  Info,
+  Ruler,
+  FileImage
 } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 import { useRestaurantSettings } from '@/hooks/useRestaurantSettings';
@@ -623,6 +627,20 @@ const Appearance = () => {
                         </Button>
                       </div>
                     )}
+                    
+                    <Alert className="bg-muted/50 border-muted">
+                      <Info className="h-4 w-4" />
+                      <AlertDescription className="space-y-2">
+                        <div className="font-medium text-sm mb-2">Recomendações para o Logo:</div>
+                        <ul className="text-xs space-y-1.5 text-muted-foreground list-disc list-inside">
+                          <li><strong>Dimensões:</strong> 400x400px a 800x800px (quadrado ou retangular)</li>
+                          <li><strong>Formato:</strong> PNG (com fundo transparente) ou SVG (recomendado)</li>
+                          <li><strong>Tamanho do arquivo:</strong> Máximo 500KB para melhor performance</li>
+                          <li><strong>Proporção:</strong> Preferencialmente 1:1 (quadrado) ou 2:1 (retangular horizontal)</li>
+                          <li><strong>Resolução:</strong> Mínimo 72 DPI, ideal 150-300 DPI</li>
+                        </ul>
+                      </AlertDescription>
+                    </Alert>
                   </div>
                 </CardContent>
               </Card>
@@ -680,6 +698,21 @@ const Appearance = () => {
                         </Button>
                       </div>
                     )}
+                    
+                    <Alert className="bg-muted/50 border-muted">
+                      <Info className="h-4 w-4" />
+                      <AlertDescription className="space-y-2">
+                        <div className="font-medium text-sm mb-2">Recomendações para a Imagem de Capa:</div>
+                        <ul className="text-xs space-y-1.5 text-muted-foreground list-disc list-inside">
+                          <li><strong>Dimensões:</strong> 1920x640px (proporção 3:1) ou 1920x800px (proporção 12:5)</li>
+                          <li><strong>Formato:</strong> JPG (para fotos) ou PNG (se precisar de transparência)</li>
+                          <li><strong>Tamanho do arquivo:</strong> Máximo 1MB para melhor carregamento</li>
+                          <li><strong>Proporção:</strong> Preferencialmente 3:1 (largura:altura) para melhor visualização</li>
+                          <li><strong>Resolução:</strong> Mínimo 72 DPI, ideal 150 DPI</li>
+                          <li><strong>Área importante:</strong> Mantenha elementos principais no centro, pois pode ser cortada em telas menores</li>
+                        </ul>
+                      </AlertDescription>
+                    </Alert>
                   </div>
                 </CardContent>
               </Card>

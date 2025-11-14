@@ -14,7 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Plus, Pencil, Trash2, Image as ImageIcon, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, Image as ImageIcon, X, Info } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { Session } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 
@@ -477,6 +478,22 @@ const Items = () => {
                       </Button>
                     </div>
                   )}
+                  
+                  <Alert className="bg-muted/50 border-muted">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="space-y-2">
+                      <div className="font-medium text-sm mb-2">Recomendações para Imagens dos Itens:</div>
+                      <ul className="text-xs space-y-1.5 text-muted-foreground list-disc list-inside">
+                        <li><strong>Dimensões:</strong> 800x600px a 1200x900px (proporção 4:3 recomendada)</li>
+                        <li><strong>Formato:</strong> JPG (para fotos) ou PNG (se precisar de transparência)</li>
+                        <li><strong>Tamanho do arquivo:</strong> Máximo 500KB para melhor performance</li>
+                        <li><strong>Proporção:</strong> Preferencialmente 4:3 ou 16:9 (retangular horizontal)</li>
+                        <li><strong>Resolução:</strong> Mínimo 72 DPI, ideal 150 DPI</li>
+                        <li><strong>Qualidade:</strong> Use imagens nítidas e bem iluminadas para destacar o prato</li>
+                        <li><strong>Foco:</strong> O prato deve estar centralizado e em destaque na imagem</li>
+                      </ul>
+                    </AlertDescription>
+                  </Alert>
                 </div>
 
                 <div className="space-y-2">
