@@ -142,23 +142,20 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
         {/* Footer */}
         <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-3 md:py-4 px-3 md:px-6">
           <div className="text-center text-xs md:text-sm text-muted-foreground">
-            <div className="flex flex-col items-center justify-center gap-1.5 sm:gap-2">
-              {/* Primeira linha: Copyright e nome */}
-              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center">
-                <span>© 2025</span>
-                <a 
-                  href="https://wa.me/5512982176890?text=Quero%20meu%20card%C3%A1pio%20digital..." 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline font-semibold transition-all hover:scale-105 inline-flex items-center gap-1"
-                >
-                  <Sparkles className="h-3 w-3" strokeWidth={2.5} />
-                  AndréSD
-                </a>
-              </div>
-              {/* Segunda linha: Texto de desenvolvimento */}
-              <span className="text-center leading-tight">Desenvolvido com carinho e dedicação</span>
-            </div>
+            <p className="flex items-center justify-center gap-2 flex-wrap">
+              <span>© 2025</span>
+              <a 
+                href="https://wa.me/5512982176890?text=Quero%20meu%20card%C3%A1pio%20digital..." 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-semibold transition-all hover:scale-105 inline-flex items-center gap-1"
+              >
+                <Sparkles className="h-3 w-3" strokeWidth={2.5} />
+                AndréSD
+              </a>
+              <span className="text-muted-foreground/50">•</span>
+              <span>Desenvolvido com carinho e dedicação</span>
+            </p>
           </div>
         </footer>
       </div>
