@@ -59,6 +59,8 @@ export interface Database {
           meta_title: string | null
           meta_description: string | null
           meta_keywords: string[] | null
+          translation_api_key: string | null
+          translation_service: string | null
           created_at: string
           updated_at: string
         }
