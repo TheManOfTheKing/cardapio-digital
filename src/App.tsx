@@ -13,6 +13,7 @@ import Categories from "./pages/admin/Categories";
 import Items from "./pages/admin/Items";
 import Translations from "./pages/admin/Translations";
 import Appearance from "./pages/admin/Appearance";
+import QRCodePage from "./pages/admin/QRCode";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/admin/items" element={<Items />} />
           <Route path="/admin/translations" element={<Translations />} />
           <Route path="/admin/appearance" element={<Appearance />} />
+          <Route path="/admin/qrcode" element={<QRCodePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
